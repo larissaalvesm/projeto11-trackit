@@ -1,21 +1,58 @@
 import styled from "styled-components"
 import logo from "../assets/logo-completa.svg"
 import { Link } from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 export default function CadastroPage() {
-    function cadastrar() {
-        return
+
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
+    const [image, setImage] = useState("");
+    const [password, setPassword] = useState("");
+    //const [carregando, setCarregando] = useState(false);
+    const [textoBotao, setTextoBotao] = useState("Cadastrar");
+    const navigate = useNavigate();
+
+    function cadastrar(e) {
+
+        e.preventDefault();
+        setTextoBotao("Carregando...");
+        // setCarregando(true);
+
+        //ainda não consegui fazer a condição debaixo
+
+        // if (carregando === true) {
+        //     setTextoBotao("Carregando...");
+        // }
+
+        const obj = {
+            email,
+            name,
+            image,
+            password
+        }
+
+        const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", obj);
+
+        request.then(() => navigate("/"));
+
+        request.catch(err => alert(err.response.data));
     }
+
+
+
     return (
         <>
             <ContainerCadastro>
                 <img src={logo} alt="logo" />
                 <FormCadastro onSubmit={cadastrar}>
-                    <input required type="email" placeholder="email" />
-                    <input required type="password" placeholder="senha" />
-                    <input required type="text" placeholder="nome" />
-                    <input required type="url" placeholder="foto" />
-                    <button type="submit">Cadastrar</button>
+                    <input required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
+                    <input required type="password" placeholder="senha" value={password} onChange={e => setPassword(e.target.value)} />
+                    <input required type="text" placeholder="nome" value={name} onChange={e => setName(e.target.value)} />
+                    <input required type="url" placeholder="foto" value={image} onChange={e => setImage(e.target.value)} />
+                    <button type="submit">{textoBotao}</button>
                 </FormCadastro>
                 <Link to="/">
                     Já tem uma conta? Faça login!

@@ -1,27 +1,75 @@
 import styled from "styled-components"
 import logo from "../assets/logo-completa.svg"
 import { Link } from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { ThreeDots } from 'react-loader-spinner'
 
 export default function LoginPage() {
-    function fazerLogin() {
-        return
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [token, setToken] = useState("");
+    const [disabled, setDisabled] = useState(false);
+    const [textBotao, setTextoBotao] = useState("Entrar");
+    const [carregando, setCarregando] = useState(false);
+    const navigate = useNavigate();
+
+    function fazerLogin(e) {
+        e.preventDefault();
+        setDisabled(true);
+        setTextoBotao("");
+        setCarregando(true);
+
+        const obj = {
+            email,
+            password
+        }
+
+        const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", obj);
+
+        request.then(response => {
+            setToken(response.data.token);
+            navigate("/hoje");
+        });
+
+        request.catch(err => {
+            alert(err.response.data.message)
+            setDisabled(false);
+            setTextoBotao("Entrar");
+            setCarregando(false);
+        }
+        );
     }
     return (
         <>
             <ContainerLogin>
                 <img src={logo} alt="logo" />
-                <FormLogin onSubmit={fazerLogin}>
-                    <input required type="email" placeholder="email" />
-                    <input required type="password" placeholder="senha" />
-                    <button type="submit">Entrar</button>
+                <FormLogin disabled={disabled} onSubmit={fazerLogin}>
+                    <input data-test="email-input" disabled={disabled} required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
+                    <input data-test="password-input" disabled={disabled} required type="password" placeholder="senha" value={password} onChange={e => setPassword(e.target.value)} />
+                    <button data-test="login-btn" disabled={disabled} type="submit">
+                        <div><ThreeDots
+                            height="10"
+                            width="80"
+                            radius="9"
+                            color="#ffffff"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={carregando}
+                        /></div>
+                        {textBotao}
+                    </button>
                 </FormLogin>
-                <Link to="/cadastro">
+                <Link to="/cadastro" data-test="signup-link">
                     Não tem uma conta? Cadastre-se!
                 </Link>
             </ContainerLogin>
         </>
     )
 }
+
 
 const FormLogin = styled.form`
     width: 303px;
@@ -41,6 +89,8 @@ const FormLogin = styled.form`
         border: none;
         border-radius: 5px;
         margin-bottom: 25px;
+        cursor:pointer;
+        opacity: ${({ disabled }) => disabled === true ? "70%" : "100%"}
     }
     input {
         margin-bottom: 6px;
@@ -55,6 +105,11 @@ const FormLogin = styled.form`
         font-size:20px;
         line-height:25px;
         }
+    }
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 `
 
