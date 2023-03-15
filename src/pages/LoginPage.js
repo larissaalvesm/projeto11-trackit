@@ -1,10 +1,13 @@
 import styled from "styled-components"
 import logo from "../assets/logo-completa.svg"
 import { Link } from "react-router-dom"
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { ThreeDots } from 'react-loader-spinner'
+import { useContext } from "react"
+import ImagemUsuario from "../contexts/Context"
+import { useState } from "react"
+
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -14,6 +17,7 @@ export default function LoginPage() {
     const [textBotao, setTextoBotao] = useState("Entrar");
     const [carregando, setCarregando] = useState(false);
     const navigate = useNavigate();
+    const {imagemUsuario, setImagemUsuario} = useContext(ImagemUsuario);
 
     function fazerLogin(e) {
         e.preventDefault();
@@ -30,6 +34,7 @@ export default function LoginPage() {
 
         request.then(response => {
             setToken(response.data.token);
+            setImagemUsuario(response.data.image);
             navigate("/hoje");
         });
 

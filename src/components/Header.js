@@ -1,11 +1,14 @@
 import styled from "styled-components"
 import logo from "../assets/logo-simplificada.svg"
+import { useContext } from "react"
+import ImagemUsuario from "../contexts/Context"
 
 export function Header() {
+    const {imagemUsuario} = useContext(ImagemUsuario)
     return (
         <HeaderContainer data-test="header">
             <Logo src={logo} alt="logo" />
-            <ImagemPerfil src="http://www.pintarcolorear.org/wp-content/uploads/2015/09/bob-esponja.png" alt="imagem-perfil" />
+                <ImagemPerfil src={imagemUsuario} alt="imagem-perfil" />
         </HeaderContainer>
     )
 }
