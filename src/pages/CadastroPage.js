@@ -50,11 +50,11 @@ export default function CadastroPage() {
             <ContainerCadastro>
                 <img src={logo} alt="logo" />
                 <FormCadastro disabled={disabled} onSubmit={cadastrar}>
-                    <input disabled={disabled} required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
-                    <input disabled={disabled} required type="password" placeholder="senha" value={password} onChange={e => setPassword(e.target.value)} />
-                    <input disabled={disabled} required type="text" placeholder="nome" value={name} onChange={e => setName(e.target.value)} />
-                    <input disabled={disabled} required type="url" placeholder="foto" value={image} onChange={e => setImage(e.target.value)} />
-                    <button disabled={disabled} type="submit">
+                    <input data-test="email-input" disabled={disabled} required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
+                    <input data-test="password-input" disabled={disabled} required type="password" placeholder="senha" value={password} onChange={e => setPassword(e.target.value)} />
+                    <input data-test="user-name-input" disabled={disabled} required type="text" placeholder="nome" value={name} onChange={e => setName(e.target.value)} />
+                    <input data-test="user-image-input" disabled={disabled} required type="url" placeholder="foto" value={image} onChange={e => setImage(e.target.value)} />
+                    <button data-test="signup-btn" disabled={disabled} type="submit">
                         <div><ThreeDots
                             height="10"
                             width="80"
@@ -67,7 +67,7 @@ export default function CadastroPage() {
                         /></div>
                         {textoBotao}</button>
                 </FormCadastro>
-                <Link to="/">
+                <Link data-test="login-link" to="/">
                     Já tem uma conta? Faça login!
                 </Link>
             </ContainerCadastro>
