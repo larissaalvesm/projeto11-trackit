@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { ThreeDots } from 'react-loader-spinner'
 
 export default function CadastroPage() {
 
@@ -11,21 +12,17 @@ export default function CadastroPage() {
     const [name, setName] = useState("");
     const [image, setImage] = useState("");
     const [password, setPassword] = useState("");
-    //const [carregando, setCarregando] = useState(false);
+    const [carregando, setCarregando] = useState(false);
     const [textoBotao, setTextoBotao] = useState("Cadastrar");
+    const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
 
     function cadastrar(e) {
 
         e.preventDefault();
-        setTextoBotao("Carregando...");
-        // setCarregando(true);
-
-        //ainda não consegui fazer a condição debaixo
-
-        // if (carregando === true) {
-        //     setTextoBotao("Carregando...");
-        // }
+        setDisabled(true);
+        setTextoBotao("");
+        setCarregando(true);
 
         const obj = {
             email,
@@ -38,7 +35,12 @@ export default function CadastroPage() {
 
         request.then(() => navigate("/"));
 
-        request.catch(err => alert(err.response.data));
+        request.catch(err => {
+            alert(err.response.data.message);
+            setDisabled(false);
+            setTextoBotao("Cadastrar");
+            setCarregando(false);
+        });
     }
 
 
@@ -47,12 +49,23 @@ export default function CadastroPage() {
         <>
             <ContainerCadastro>
                 <img src={logo} alt="logo" />
-                <FormCadastro onSubmit={cadastrar}>
-                    <input required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
-                    <input required type="password" placeholder="senha" value={password} onChange={e => setPassword(e.target.value)} />
-                    <input required type="text" placeholder="nome" value={name} onChange={e => setName(e.target.value)} />
-                    <input required type="url" placeholder="foto" value={image} onChange={e => setImage(e.target.value)} />
-                    <button type="submit">{textoBotao}</button>
+                <FormCadastro disabled={disabled} onSubmit={cadastrar}>
+                    <input disabled={disabled} required type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
+                    <input disabled={disabled} required type="password" placeholder="senha" value={password} onChange={e => setPassword(e.target.value)} />
+                    <input disabled={disabled} required type="text" placeholder="nome" value={name} onChange={e => setName(e.target.value)} />
+                    <input disabled={disabled} required type="url" placeholder="foto" value={image} onChange={e => setImage(e.target.value)} />
+                    <button disabled={disabled} type="submit">
+                        <div><ThreeDots
+                            height="10"
+                            width="80"
+                            radius="9"
+                            color="#ffffff"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={carregando}
+                        /></div>
+                        {textoBotao}</button>
                 </FormCadastro>
                 <Link to="/">
                     Já tem uma conta? Faça login!
@@ -80,6 +93,8 @@ const FormCadastro = styled.form`
             border: none;
             border-radius: 5px;
             margin-bottom: 25px;
+            cursor:pointer;
+            opacity: ${({ disabled }) => disabled === true ? "70%" : "100%"}
         }
         input {
             margin-bottom: 6px;
@@ -95,6 +110,11 @@ const FormCadastro = styled.form`
             line-height:25px;
             }
         }
+        div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     `
 
 const ContainerCadastro = styled.div`
