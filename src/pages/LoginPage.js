@@ -5,19 +5,18 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { ThreeDots } from 'react-loader-spinner'
 import { useContext } from "react"
-import ImagemUsuario from "../contexts/Context"
+import Context from "../contexts/Context"
 import { useState } from "react"
 
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [token, setToken] = useState("");
     const [disabled, setDisabled] = useState(false);
     const [textBotao, setTextoBotao] = useState("Entrar");
     const [carregando, setCarregando] = useState(false);
     const navigate = useNavigate();
-    const {imagemUsuario, setImagemUsuario} = useContext(ImagemUsuario);
+    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
 
     function fazerLogin(e) {
         e.preventDefault();

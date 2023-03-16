@@ -1,10 +1,10 @@
 import styled from "styled-components"
 import logo from "../assets/logo-simplificada.svg"
 import { useContext } from "react"
-import ImagemUsuario from "../contexts/Context"
+import Context from "../contexts/Context"
 
 export function Header() {
-    const {imagemUsuario} = useContext(ImagemUsuario)
+    const {imagemUsuario} = useContext(Context)
     return (
         <HeaderContainer data-test="header">
             <Logo src={logo} alt="logo" />

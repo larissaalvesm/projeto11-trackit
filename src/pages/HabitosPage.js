@@ -1,54 +1,96 @@
-import styled from "styled-components"
-import lixeira from "../assets/trash-outline.svg"
-import { Header } from "../components/Header"
-import { Footer } from "../components/Footer"
+import styled from "styled-components";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useContext } from "react";
+import Context from "../contexts/Context";
+import Habito from "../components/Habito";
+import DiasSemana from "../components/DiasSemana";
+import days from "../days";
 
 export default function HabitosPage() {
+    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
+    const [habitos, setHabitos] = useState([]);
+    const [novoHabito, setNovoHabito] = useState("none");
+    const [nomeHabito, setNomeHabito] = useState("");
+    const [diasHabito, setDiasHabito] = useState([]);
+    const [diaClicado, setDiaClicado] = useState("");
+
+    function selecionarDia(dia){
+
+        if(!diasHabito.includes(dia)){
+        const novosDiasHabito = [...diasHabito, dia];
+        setDiasHabito(novosDiasHabito);
+        } else{
+            const desmarcarDia = diasHabito.filter((d => d !== dia));
+            setDiasHabito(desmarcarDia);
+        }
+        setDiaClicado(dia);       
+    }
+
+    console.log(diasHabito);
+    console.log(diaClicado);
+
+    useEffect(() => {
+
+    const  request = axios.get(
+        "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+        { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+    request.then(response => {
+        setHabitos(response.data)
+    })
+
+    request.catch(err => console.log(err.response.data.message))
+
+    }, [])
+
+    function adicionarNovoHabito() {
+        setNovoHabito("");
+    }
+
+    function cancelarNovoHabito(){
+        setNovoHabito("none");
+    }
+
+
+
+    
+
     return (
         <>
             <ContainerHabitos>
                 <Header />
-                <Conteudo>
+                <Conteudo habitos={habitos}>
                     <TopoConteudo>
                         <h1>Meus hábitos</h1>
-                        <button>+</button>
+                        <button onClick={adicionarNovoHabito}>+</button>
                     </TopoConteudo>
-                    <NovoHabito>
-                        <input required type="text" placeholder="nome do hábito" />
-                        <DiasSemana>
-                            <button>D</button>
-                            <button>S</button>
-                            <button>T</button>
-                            <button>Q</button>
-                            <button>Q</button>
-                            <button>S</button>
-                            <button>S</button>
-                        </DiasSemana>
+                    <NovoHabito novoHabito={novoHabito} >
+                        <input required type="text" placeholder="nome do hábito" value={nomeHabito} onChange={e => setNomeHabito(e.target.value)}/>
+                        <DiasSemanaContainer>
+                        {days.map((day, i) => <DiasSemana day={day} i={i} diasHabito={diasHabito} selecionarDia={selecionarDia} diaClicado={diaClicado}/>)}
+                        </DiasSemanaContainer>
                         <Botoes>
-                            <Cancelar>Cancelar</Cancelar>
+                            <Cancelar onClick={cancelarNovoHabito}>Cancelar</Cancelar>
                             <Salvar>Salvar</Salvar>
                         </Botoes>
                     </NovoHabito>
-                    <Habito>
-                        <p>Ler 1 capítulo de livro</p>
-                        <img src={lixeira} alt="apagar" />
-                        <DiasSemana>
-                            <button>D</button>
-                            <button>S</button>
-                            <button>T</button>
-                            <button>Q</button>
-                            <button>Q</button>
-                            <button>S</button>
-                            <button>S</button>
-                        </DiasSemana>
-                    </Habito>
-                    <h1>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</h1>
+                    <ContainerLista>
+                        {habitos.map(hab => <Habito key={hab.id} titulo={hab.name} dias={hab.days}/>)}
+                    </ContainerLista>
+                    <h2>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</h2>
                 </Conteudo>
                 <Footer />
             </ContainerHabitos>
         </>
     )
 }
+
+const ContainerLista = styled.div`
+`
 
 const Cancelar = styled.button`
     border:none;
@@ -80,9 +122,8 @@ const NovoHabito = styled.div`
     height: 180px;
     margin-bottom:29px;
     border-radius: 5px;
-    display:flex;
-    flex-direction: column;
     padding: 18px;
+    display: ${({novoHabito}) => novoHabito};
     input {
             margin-bottom: 8px;
             width: 100%;
@@ -98,50 +139,9 @@ const NovoHabito = styled.div`
             }
         }
 `
-const Habito = styled.div`
-    background-color: #FFFFFF;
-    height: 91px;
-    margin-bottom:10px;
-    border-radius: 5px;
-    display:flex;
-    flex-direction: column;
-    padding: 15px;
-    position: relative;
-    p {
-        margin-bottom: 8px;
-        color:#666666;
-        font-family: 'Lexend Deca', sans-serif;
-        font-size:20px;
-        line-height:25px;
-        }
-    img{
-        width:18px;
-        height: 20px;
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        cursor:pointer;
-    }
-`
-
-const DiasSemana = styled.div`
+const DiasSemanaContainer = styled.div`
     display:flex;
     justify-content: flex-start;
-    button{
-        background-color: #FFFFFF; //#CFCFCF
-        margin-bottom: 30px;
-        margin-right: 4px;
-        width: 30px;
-        height: 30px;
-        border: solid 1px #D4D4D4;
-        border-radius: 5px;
-        color:#DBDBDB; //#FFFFFF
-        font-family: 'Lexend Deca', sans-serif;
-        font-size:20px;
-        line-height:25px;
-        text-align: center;
-        cursor:pointer;
-    }
 `
 
 const Botoes = styled.div`
@@ -155,13 +155,13 @@ padding: 0 18px;
 margin-bottom: 120px;
 overflow-y: hidden;
 overflow-y: scroll;
-    h1{
+    h2{
         color:#666666;
         font-family: 'Lexend Deca', sans-serif;
         font-size:18px;
         font-weight:400;
         line-height:22px;
-        
+        display: ${({habitos}) => habitos.length === 0 ? "" : "none"};
     }
 `
 const TopoConteudo = styled.div`

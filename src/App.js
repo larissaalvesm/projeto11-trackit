@@ -5,15 +5,16 @@ import HabitosPage from "./pages/HabitosPage";
 import HistoricoPage from "./pages/HistoricoPage";
 import HojePage from "./pages/HojePage";
 import LoginPage from "./pages/LoginPage";
-import ImagemUsuario from "./contexts/Context";
+import Context from "./contexts/Context";
 
 function App() {
 
   const [imagemUsuario, setImagemUsuario] = useState("")
+  const [token, setToken] = useState("");
 
   return (
     <>
-    <ImagemUsuario.Provider value={{imagemUsuario, setImagemUsuario}}>
+    <Context.Provider value={{imagemUsuario, setImagemUsuario, token, setToken}}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage/>}></Route>
@@ -23,7 +24,7 @@ function App() {
           <Route path="/historico" element={<HistoricoPage />}></Route>
         </Routes>
       </BrowserRouter>
-      </ImagemUsuario.Provider>
+      </Context.Provider>
     </>
   );
 }
