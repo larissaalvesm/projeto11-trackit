@@ -1,16 +1,13 @@
 import styled from "styled-components"
 
-export default function DiasSemana({day, i, diasHabito, selecionarDia, disabled}) {
+export default function DiasHabito({day, i, hab}) {
     
     return (
-        
             <BotaoDia
             data-test="habit-day"
-            disabled={disabled}
-            diasHabito={diasHabito} 
+            dias={hab.days}
             i={i}
             key={i}
-            onClick={() => selecionarDia(i)}
             >
             {day}
             </BotaoDia>
@@ -18,7 +15,7 @@ export default function DiasSemana({day, i, diasHabito, selecionarDia, disabled}
 }
 
 const BotaoDia = styled.button`
-        background-color: ${({diasHabito, i}) => diasHabito.includes(i) ? "#CFCFCF" : "#FFFFFF" }; 
+        background-color: ${({dias, i}) => dias.includes(i) ? "#CFCFCF" : "#FFFFFF" }; 
         margin-bottom: 30px;
         margin-right: 4px;
         width: 30px;
@@ -30,5 +27,4 @@ const BotaoDia = styled.button`
         font-size:20px;
         line-height:25px;
         text-align: center;
-        cursor:pointer;
 `

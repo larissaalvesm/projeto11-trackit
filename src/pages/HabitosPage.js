@@ -8,6 +8,7 @@ import Context from "../contexts/Context";
 import Habito from "../components/Habito";
 import DiasSemana from "../components/DiasSemana";
 import days from "../days";
+import { ThreeDots } from 'react-loader-spinner'
 
 export default function HabitosPage() {
     const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
@@ -16,6 +17,10 @@ export default function HabitosPage() {
     const [nomeHabito, setNomeHabito] = useState("");
     const [diasHabito, setDiasHabito] = useState([]);
     const [diaClicado, setDiaClicado] = useState("");
+    const [disabled, setDisabled] = useState(false);
+    const [textBotao, setTextoBotao] = useState("Salvar");
+    const [carregando, setCarregando] = useState(false);
+    const [recarregarPagina, setRecarregarPagina] = useState(0);
 
     function selecionarDia(dia){
 
@@ -29,8 +34,7 @@ export default function HabitosPage() {
         setDiaClicado(dia);       
     }
 
-    console.log(diasHabito);
-    console.log(diaClicado);
+    console.log(habitos);
 
     useEffect(() => {
 
@@ -45,7 +49,7 @@ export default function HabitosPage() {
 
     request.catch(err => console.log(err.response.data.message))
 
-    }, [])
+    }, [recarregarPagina])
 
     function adicionarNovoHabito() {
         setNovoHabito("");
@@ -55,9 +59,38 @@ export default function HabitosPage() {
         setNovoHabito("none");
     }
 
+    function criarHabito(){
+        setDisabled(true);
+        setTextoBotao("");
+        setCarregando(true);
+        const body = {
+            name: nomeHabito,
+            days: diasHabito
+        }
+        const request = axios.post(
+            "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", 
+            body, 
+            { headers: { Authorization: `Bearer ${token}` } });
 
+        request.then(() => {
+            setNomeHabito("");
+            setDiasHabito([]);
+            setDisabled(false);
+            setTextoBotao("Salvar");
+            setCarregando(false);
+            setNovoHabito("none");
+            setRecarregarPagina(1);
+        })
 
-    
+        request.catch(err => {
+            alert(err.response.data.message)
+            setDisabled(false);
+            setTextoBotao("Salvar");
+            setCarregando(false);
+        }
+        );
+
+    }
 
     return (
         <>
@@ -66,21 +99,33 @@ export default function HabitosPage() {
                 <Conteudo habitos={habitos}>
                     <TopoConteudo>
                         <h1>Meus hábitos</h1>
-                        <button onClick={adicionarNovoHabito}>+</button>
+                        <button data-test="habit-create-btn" onClick={adicionarNovoHabito}>+</button>
                     </TopoConteudo>
-                    <NovoHabito novoHabito={novoHabito} >
-                        <input required type="text" placeholder="nome do hábito" value={nomeHabito} onChange={e => setNomeHabito(e.target.value)}/>
+                    <NovoHabito data-test="habit-create-container" novoHabito={novoHabito} >
+                        <input data-test="habit-name-input" required disabled={disabled} type="text" placeholder="nome do hábito" value={nomeHabito} onChange={e => setNomeHabito(e.target.value)}/>
                         <DiasSemanaContainer>
-                        {days.map((day, i) => <DiasSemana day={day} i={i} diasHabito={diasHabito} selecionarDia={selecionarDia} diaClicado={diaClicado}/>)}
+                        {days.map((day, i) => <DiasSemana key={i} day={day} i={i} diasHabito={diasHabito} selecionarDia={selecionarDia} disabled={disabled} />)}
                         </DiasSemanaContainer>
                         <Botoes>
-                            <Cancelar onClick={cancelarNovoHabito}>Cancelar</Cancelar>
-                            <Salvar>Salvar</Salvar>
+                            <Cancelar data-test="habit-create-cancel-btn" onClick={cancelarNovoHabito}>Cancelar</Cancelar>
+                            <Salvar data-test="habit-create-save-btn" disabled={disabled} onClick={criarHabito}>
+                            <div><ThreeDots
+                            height="10"
+                            width="80"
+                            radius="9"
+                            color="#ffffff"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={carregando}
+                        /></div>
+                                {textBotao}
+                                </Salvar>
                         </Botoes>
                     </NovoHabito>
-                    <ContainerLista>
-                        {habitos.map(hab => <Habito key={hab.id} titulo={hab.name} dias={hab.days}/>)}
-                    </ContainerLista>
+                    
+                        {habitos.map(hab => <Habito key={hab.id} hab={hab}/>)}
+                    
                     <h2>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</h2>
                 </Conteudo>
                 <Footer />
@@ -89,8 +134,6 @@ export default function HabitosPage() {
     )
 }
 
-const ContainerLista = styled.div`
-`
 
 const Cancelar = styled.button`
     border:none;
@@ -152,6 +195,7 @@ const Botoes = styled.div`
 const Conteudo = styled.div`
 margin-top:95px;
 padding: 0 18px;
+width: 375px;
 margin-bottom: 120px;
 overflow-y: hidden;
 overflow-y: scroll;
