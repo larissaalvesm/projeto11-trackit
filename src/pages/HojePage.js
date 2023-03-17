@@ -11,6 +11,47 @@ import dayjs from "dayjs";
 export default function HojePage() {
     const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
     const [habitosHoje, setHabitosHoje] = useState([]);
+    const [recarregarPagina, setRecarregarPagina] = useState(0);
+    const [habitosMarcados, setHabitosMarcados] = useState([]);
+    const [porcentagem, setPorcentagem] = useState(0);
+
+    function marcarHabito(hab){
+
+        const body = {};
+
+        if(hab.done === false) {
+            const  request = axios.post(
+                `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${hab.id}/check`,
+                body,
+                { headers: { Authorization: `Bearer ${token}` } }
+                );
+    
+            request.then(() => {
+                setHabitosMarcados([...habitosMarcados, hab.id]);
+                const aum = recarregarPagina + 1;
+                setRecarregarPagina(aum);
+                })
+    
+            request.catch(err => console.log(err.response.data.message))
+    
+            } else if (hab.done === true){
+                const  request = axios.post(
+                    `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${hab.id}/uncheck`,
+                    body,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                    );
+        
+                request.then(() => {
+                    const desmarcarHabito = habitosMarcados.filter((h => h !== hab.id));
+                    setHabitosMarcados(desmarcarHabito);
+                    const aum = recarregarPagina + 1;
+                    setRecarregarPagina(aum);
+                })
+        
+                request.catch(err => console.log(err.response.data.message))
+            }
+        } 
+
 
     useEffect(() =>{
 
@@ -21,11 +62,16 @@ export default function HojePage() {
     
         request.then(response => {
             setHabitosHoje(response.data);
+            const numeroHabitosHoje= response.data.length;
+            const numeroHabitosConcluidos = (response.data.filter( h => h.done === true)).length;
+            const porc = (numeroHabitosConcluidos/numeroHabitosHoje)*100;
+            setPorcentagem(porc);
         })
     
         request.catch(err => console.log(err.response.data.message))
 
-        }, [])
+
+        }, [recarregarPagina])
 
         const dia = dayjs().locale('pt-br').day();
 
@@ -46,19 +92,18 @@ export default function HojePage() {
                 case 7:
                     return "Domingo";
             }
-        }
-    
+        }    
 
     return (
         <>
             <ContainerHabitos>
                 <Header />
                 <Conteudo>
-                    <TopoConteudo>
+                    <TopoConteudo porcentagem={porcentagem}>
                         <h1 data-test="today">{`${retornarDiaSemana(dia)}, ${dayjs().format('DD/MM')}`}</h1>
-                        <h2 data-test="today-counter">Nenhum hábito concluído ainda</h2>
+                        <h2 data-test="today-counter">{porcentagem === 0 ? "Nenhum hábito concluído ainda" : `${Math.ceil(porcentagem)}% dos hábitos concluídos`}</h2>
                     </TopoConteudo>
-                   {habitosHoje.map(hab => <HabitoHoje key={hab.id} hab={hab}/>)} 
+                   {habitosHoje.map(hab => <HabitoHoje key={hab.id} hab={hab} marcarHabito={marcarHabito} habitosMarcados={habitosMarcados}/>)} 
                 </Conteudo>
                 <Footer />
             </ContainerHabitos>
@@ -84,7 +129,7 @@ const TopoConteudo = styled.div`
         line-height:29px;
     }
     h2{
-        color:#BABABA; // #8FC549
+        color:${({porcentagem}) => porcentagem === 0 ? "#BABABA": "#8FC549"};
         font-family: 'Lexend Deca', sans-serif;
         font-size:18px;
         font-weight: 400; 

@@ -1,13 +1,15 @@
 import styled from "styled-components"
 import { BiCheck } from "react-icons/bi"
 
-export default function HabitoHoje({hab}){
+export default function HabitoHoje({hab, marcarHabito, habitosMarcados}){
+
+
     return (
-        <Habito data-test="today-habit-container">
+        <Habito id={hab.id} habitosMarcados={habitosMarcados} data-test="today-habit-container">
             <h1 data-test="today-habit-name">{hab.name}</h1>
-            <h3 data-test="today-habit-sequence">Sequência atual: {hab.currentSequence} dias</h3>
+            <h3 data-test="today-habit-sequence">Sequência atual: <span>{hab.currentSequence} dias</span></h3>
             <h3 data-test="today-habit-record">Seu recorde: {hab.highestSequence} dias</h3>
-            <IonIcon data-test="today-habit-check-btn" src={BiCheck} />
+            <IonIcon id={hab.id} habitosMarcados={habitosMarcados} done={hab.done} data-test="today-habit-check-btn" src={BiCheck} onClick={() => marcarHabito(hab)} />
         </Habito>
     )
 }
@@ -35,6 +37,9 @@ const Habito = styled.div`
         font-size:13px;
         font-weight: 400;
         line-height:16px;
+        span{
+            color:${({id, habitosMarcados}) => habitosMarcados.includes(id) ? "#8FC549" : "#666666"};
+        }
     }
 `
 const IonIcon = styled(BiCheck)`
@@ -44,7 +49,7 @@ const IonIcon = styled(BiCheck)`
         right: 13px;
         top: 13px;
         cursor:pointer;
-        background-color: #EBEBEB; //#8FC549
+        background-color: ${({id, habitosMarcados, done}) => (habitosMarcados.includes(id) || done === true) ? "#8FC549" : "#EBEBEB"};
         border: solid 1px #E7E7E7;
         border-radius: 5px;
         color: #FFFFFF;
