@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import logo from "../assets/logo-simplificada.svg"
 import { useContext } from "react"
 import Context from "../contexts/Context"
 
@@ -7,7 +6,7 @@ export function Header() {
     const {imagemUsuario} = useContext(Context)
     return (
         <HeaderContainer data-test="header">
-            <Logo src={logo} alt="logo" />
+            <h1>TrackIt</h1>
                 <ImagemPerfil src={imagemUsuario} alt="imagem-perfil" />
         </HeaderContainer>
     )
@@ -24,10 +23,14 @@ const HeaderContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 0 18px;
-`
-const Logo = styled.img`
-    width: 97px;
-    height: 49px;
+
+    h1{
+        font-family: 'Playball', cursive;
+        font-weight: 400;
+        font-size: 39px;
+        line-height: 49px;
+        color: #FFFFFF;
+    }
 `
 
 const ImagemPerfil = styled.img`
