@@ -2,12 +2,34 @@ import styled from "styled-components"
 import lixeira from "../assets/trash-outline.svg";
 import days from "../days";
 import DiasHabito from "./DiasHabito";
+import axios from "axios";
+import { useContext } from "react";
+import Context from "../contexts/Context";
 
-export default function Habito({hab}) {
+export default function Habito({hab, setRecarregarPagina, recarregarPagina}) {
+    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
+    function deletarHabito(id){
+        if(window.confirm("Deseja deletar esse hábito?")){
+            const request = axios.delete(
+                `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`,
+                { headers: { Authorization: `Bearer ${token}` } } )
+
+                request.then(() => {
+                    const aum = recarregarPagina + 1;
+                    setRecarregarPagina(aum);
+                });
+        
+                request.catch(err => {
+                    console.log(err.response.data.message)
+                }
+                );
+        }
+    }
+
     return (
         <HabitoContainer data-test="habit-container">
                         <p data-test="habit-name">{hab.name}</p>
-                        <img data-test="habit-delete-btn" src={lixeira} alt="apagar" />
+                        <img data-test="habit-delete-btn" src={lixeira} alt="apagar" onClick={() => deletarHabito(hab.id)} />
                         <DiasSemana>
                         {days.map((day, i) => <DiasHabito key={i} day={day} i={i} hab={hab}/>)}
                         </DiasSemana>

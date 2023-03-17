@@ -34,8 +34,6 @@ export default function HabitosPage() {
         setDiaClicado(dia);       
     }
 
-    console.log(habitos);
-
     useEffect(() => {
 
     const  request = axios.get(
@@ -44,12 +42,14 @@ export default function HabitosPage() {
         );
 
     request.then(response => {
-        setHabitos(response.data)
+        setHabitos(response.data);
     })
 
     request.catch(err => console.log(err.response.data.message))
 
-    }, [recarregarPagina])
+    }, [recarregarPagina]);
+
+
 
     function adicionarNovoHabito() {
         setNovoHabito("");
@@ -79,7 +79,9 @@ export default function HabitosPage() {
             setTextoBotao("Salvar");
             setCarregando(false);
             setNovoHabito("none");
-            setRecarregarPagina(1);
+
+            const aum = recarregarPagina + 1;
+            setRecarregarPagina(aum);
         })
 
         request.catch(err => {
@@ -107,7 +109,7 @@ export default function HabitosPage() {
                         {days.map((day, i) => <DiasSemana key={i} day={day} i={i} diasHabito={diasHabito} selecionarDia={selecionarDia} disabled={disabled} />)}
                         </DiasSemanaContainer>
                         <Botoes>
-                            <Cancelar data-test="habit-create-cancel-btn" onClick={cancelarNovoHabito}>Cancelar</Cancelar>
+                            <Cancelar data-test="habit-create-cancel-btn" disabled={disabled} onClick={cancelarNovoHabito}>Cancelar</Cancelar>
                             <Salvar data-test="habit-create-save-btn" disabled={disabled} onClick={criarHabito}>
                             <div><ThreeDots
                             height="10"
@@ -124,7 +126,7 @@ export default function HabitosPage() {
                         </Botoes>
                     </NovoHabito>
                     
-                        {habitos.map(hab => <Habito key={hab.id} hab={hab}/>)}
+                        {habitos.map(hab => <Habito key={hab.id} hab={hab} setRecarregarPagina={setRecarregarPagina} recarregarPagina={recarregarPagina}/>)}
                     
                     <h2>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</h2>
                 </Conteudo>
@@ -205,7 +207,7 @@ overflow-y: scroll;
         font-size:18px;
         font-weight:400;
         line-height:22px;
-        display: ${({habitos}) => habitos.length === 0 ? "" : "none"};
+        display: ${({habitos}) => (habitos.length === 0) ? "" : "none"};
     }
 `
 const TopoConteudo = styled.div`
