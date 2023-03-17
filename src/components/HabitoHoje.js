@@ -5,10 +5,10 @@ export default function HabitoHoje({hab, marcarHabito, habitosMarcados}){
 
 
     return (
-        <Habito id={hab.id} habitosMarcados={habitosMarcados} data-test="today-habit-container">
+        <Habito id={hab.id} habitosMarcados={habitosMarcados} sequenciaAtual={hab.currentSequence} recorde={hab.highestSequence} data-test="today-habit-container">
             <h1 data-test="today-habit-name">{hab.name}</h1>
             <h3 data-test="today-habit-sequence">Sequência atual: <span>{hab.currentSequence} dias</span></h3>
-            <h3 data-test="today-habit-record">Seu recorde: {hab.highestSequence} dias</h3>
+            <h3 data-test="today-habit-record">Seu recorde: <span>{hab.highestSequence} dias</span></h3>
             <IonIcon id={hab.id} habitosMarcados={habitosMarcados} done={hab.done} data-test="today-habit-check-btn" src={BiCheck} onClick={() => marcarHabito(hab)} />
         </Habito>
     )
@@ -38,7 +38,7 @@ const Habito = styled.div`
         font-weight: 400;
         line-height:16px;
         span{
-            color:${({id, habitosMarcados}) => habitosMarcados.includes(id) ? "#8FC549" : "#666666"};
+            color:${({id, habitosMarcados, sequenciaAtual, recorde}) => (habitosMarcados.includes(id) || (sequenciaAtual != 0 && sequenciaAtual == recorde)) ? "#8FC549" : "#666666"};
         }
     }
 `
