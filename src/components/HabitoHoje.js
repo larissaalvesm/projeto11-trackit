@@ -3,7 +3,9 @@ import { BiCheck } from "react-icons/bi"
 
 export default function HabitoHoje({hab, marcarHabito, habitosMarcados}){
 
-
+console.log(hab)
+console.log(hab.currentSequence)
+console.log(hab.highestSequence)
     return (
         <Habito id={hab.id} habitosMarcados={habitosMarcados} sequenciaAtual={hab.currentSequence} recorde={hab.highestSequence} data-test="today-habit-container">
             <h1 data-test="today-habit-name">{hab.name}</h1>
@@ -48,7 +50,7 @@ const Habito = styled.div`
         font-weight: 400;
         line-height:16px;
         span{
-            color:${({sequenciaAtual, recorde}) => (sequenciaAtual >= recorde && sequenciaAtual != 0) ? "#8FC549" : "#666666"};
+            color:${({sequenciaAtual, recorde}) => (sequenciaAtual == recorde && sequenciaAtual != 0) ? "#8FC549" : "#666666"};
         }
     }
 `
