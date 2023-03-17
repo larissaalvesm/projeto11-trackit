@@ -9,11 +9,11 @@ import Context from "../contexts/Context";
 import dayjs from "dayjs";
 
 export default function HojePage() {
-    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
+    const {imagemUsuario, setImagemUsuario, token, setToken, porcentagem, setPorcentagem} = useContext(Context);
     const [habitosHoje, setHabitosHoje] = useState([]);
     const [recarregarPagina, setRecarregarPagina] = useState(0);
     const [habitosMarcados, setHabitosMarcados] = useState([]);
-    const [porcentagem, setPorcentagem] = useState(0);
+    
 
     function marcarHabito(hab){
 
