@@ -1,69 +1,70 @@
 import styled from "styled-components"
 import { Header } from "../components/Header"
-import { BiCheck } from "react-icons/bi"
 import { Footer } from "../components/Footer"
+import HabitoHoje from "../components/HabitoHoje"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { useContext } from "react";
+import Context from "../contexts/Context";
+import dayjs from "dayjs";
 
 export default function HojePage() {
+    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
+    const [habitosHoje, setHabitosHoje] = useState([]);
+
+    useEffect(() =>{
+
+        const  request = axios.get(
+            "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",
+            { headers: { Authorization: `Bearer ${token}` } }
+            );
+    
+        request.then(response => {
+            setHabitosHoje(response.data);
+        })
+    
+        request.catch(err => console.log(err.response.data.message))
+
+        }, [])
+
+        const dia = dayjs().locale('pt-br').day();
+
+        function retornarDiaSemana(dia) {
+            switch (dia) {
+                case 1:
+                    return "Segunda";
+                case 2:
+                    return "Terça";
+                case 3:
+                    return "Quarta";
+                case 4:
+                    return "Quinta";
+                case 5:
+                    return "Sexta";
+                case 6:
+                    return "Sábado";
+                case 7:
+                    return "Domingo";
+            }
+        }
+    
+
     return (
         <>
             <ContainerHabitos>
                 <Header />
                 <Conteudo>
                     <TopoConteudo>
-                        <h1>Segunda, 17/05</h1>
-                        <h2>Nenhum hábito concluído ainda</h2>
+                        <h1 data-test="today">{`${retornarDiaSemana(dia)}, ${dayjs().format('DD/MM')}`}</h1>
+                        <h2 data-test="today-counter">Nenhum hábito concluído ainda</h2>
                     </TopoConteudo>
-                    <Habito>
-                        <h1>Ler 1 capítulo de livro</h1>
-                        <h3>Sequência atual: 3 dias</h3>
-                        <h3>Seu recorde: 5 dias</h3>
-                        <IonIcon src={BiCheck} />
-                    </Habito>
-
+                   {habitosHoje.map(hab => <HabitoHoje key={hab.id} hab={hab}/>)} 
                 </Conteudo>
                 <Footer />
             </ContainerHabitos>
         </>
     )
 }
-
-const Habito = styled.div`
-    background-color: #FFFFFF;
-    height: 94px;
-    margin-bottom:10px;
-    border-radius: 5px;
-    display:flex;
-    flex-direction: column;
-    padding: 15px;
-    position: relative;
-    h1 {
-        margin-bottom: 8px;
-        color:#666666;
-        font-family: 'Lexend Deca', sans-serif;
-        font-size:20px;
-        font-weight: 400;
-        line-height:25px;
-        }
-    h3{
-        color:#666666;
-        font-family: 'Lexend Deca', sans-serif;
-        font-size:13px;
-        font-weight: 400;
-        line-height:16px;
-    }
-`
-const IonIcon = styled(BiCheck)`
-      width:69px;
-        height: 69px;
-        position: absolute;
-        right: 13px;
-        top: 13px;
-        cursor:pointer;
-        background-color: #EBEBEB; //#8FC549
-        border: solid 1px #E7E7E7;
-        border-radius: 5px;
-        color: #FFFFFF;
-`
 
 const Conteudo = styled.div`
 margin-top:95px;
