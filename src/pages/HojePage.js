@@ -99,9 +99,9 @@ export default function HojePage() {
             <ContainerHabitos>
                 <Header />
                 <Conteudo>
-                    <TopoConteudo porcentagem={porcentagem}>
+                    <TopoConteudo porcentagem={porcentagem} habitosHoje={habitosHoje}>
                         <h1 data-test="today">{`${retornarDiaSemana(dia)}, ${dayjs().format('DD/MM')}`}</h1>
-                        <h2 data-test="today-counter">{porcentagem === 0 ? "Nenhum hábito concluído ainda" : `${Math.ceil(porcentagem)}% dos hábitos concluídos`}</h2>
+                        <h2 data-test="today-counter">{(porcentagem === 0 || habitosHoje.length === 0) ? "Nenhum hábito concluído ainda" : `${Math.ceil(porcentagem)}% dos hábitos concluídos`}</h2>
                     </TopoConteudo>
                    {habitosHoje.map(hab => <HabitoHoje key={hab.id} hab={hab} marcarHabito={marcarHabito} habitosMarcados={habitosMarcados}/>)} 
                 </Conteudo>
@@ -129,7 +129,7 @@ const TopoConteudo = styled.div`
         line-height:29px;
     }
     h2{
-        color:${({porcentagem}) => porcentagem === 0 ? "#BABABA": "#8FC549"};
+        color:${({porcentagem, habitosHoje}) => (porcentagem === 0 || habitosHoje.length === 0) ? "#BABABA": "#8FC549"};
         font-family: 'Lexend Deca', sans-serif;
         font-size:18px;
         font-weight: 400; 
