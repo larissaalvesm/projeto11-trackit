@@ -7,7 +7,7 @@ import { useContext } from "react";
 import Context from "../contexts/Context";
 
 export default function Habito({hab, setRecarregarPagina, recarregarPagina}) {
-    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
+    const {token} = useContext(Context);
     function deletarHabito(id){
         if(window.confirm("Deseja deletar esse hábito?")){
             const request = axios.delete(

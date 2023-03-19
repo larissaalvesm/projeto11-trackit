@@ -16,7 +16,7 @@ export default function LoginPage() {
     const [textBotao, setTextoBotao] = useState("Entrar");
     const [carregando, setCarregando] = useState(false);
     const navigate = useNavigate();
-    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
+    const {setImagemUsuario, setToken} = useContext(Context);
 
     function fazerLogin(e) {
         e.preventDefault();

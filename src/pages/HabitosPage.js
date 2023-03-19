@@ -11,12 +11,11 @@ import days from "../days";
 import { ThreeDots } from 'react-loader-spinner'
 
 export default function HabitosPage() {
-    const {imagemUsuario, setImagemUsuario, token, setToken} = useContext(Context);
+    const {token} = useContext(Context);
     const [habitos, setHabitos] = useState([]);
     const [novoHabito, setNovoHabito] = useState("none");
     const [nomeHabito, setNomeHabito] = useState("");
     const [diasHabito, setDiasHabito] = useState([]);
-    const [diaClicado, setDiaClicado] = useState("");
     const [disabled, setDisabled] = useState(false);
     const [textBotao, setTextoBotao] = useState("Salvar");
     const [carregando, setCarregando] = useState(false);
@@ -30,8 +29,7 @@ export default function HabitosPage() {
         } else{
             const desmarcarDia = diasHabito.filter((d => d !== dia));
             setDiasHabito(desmarcarDia);
-        }
-        setDiaClicado(dia);       
+        }    
     }
 
     useEffect(() => {
@@ -47,7 +45,7 @@ export default function HabitosPage() {
 
     request.catch(err => console.log(err.response.data.message))
 
-    }, [recarregarPagina]);
+    }, [recarregarPagina]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
 

@@ -9,7 +9,7 @@ import Context from "../contexts/Context";
 import dayjs from "dayjs";
 
 export default function HojePage() {
-    const {imagemUsuario, setImagemUsuario, token, setToken, porcentagem, setPorcentagem} = useContext(Context);
+    const {token, porcentagem, setPorcentagem} = useContext(Context);
     const [habitosHoje, setHabitosHoje] = useState([]);
     const [recarregarPagina, setRecarregarPagina] = useState(0);
     const [habitosMarcados, setHabitosMarcados] = useState([]);
@@ -71,7 +71,7 @@ export default function HojePage() {
         request.catch(err => console.log(err.response.data.message))
 
 
-        }, [recarregarPagina])
+        }, [recarregarPagina]); // eslint-disable-line react-hooks/exhaustive-deps
 
         const dia = dayjs().locale('pt-br').day();
 
@@ -89,8 +89,10 @@ export default function HojePage() {
                     return "Sexta";
                 case 6:
                     return "Sábado";
-                case 7:
+                case 0:
                     return "Domingo";
+                default:
+                    return "Dia";
             }
         }    
 

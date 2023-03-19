@@ -6,7 +6,7 @@ import { useContext } from "react";
 import Context from "../contexts/Context";
 
 export function Footer() {
-    const {imagemUsuario, setImagemUsuario, token, setToken, porcentagem, setPorcentagem} = useContext(Context);
+    const {porcentagem} = useContext(Context);
     return (
         <FooterContainer data-test="menu">
             <Link data-test="habit-link" to="/habitos">
