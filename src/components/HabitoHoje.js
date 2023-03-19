@@ -47,7 +47,7 @@ const Habito = styled.div`
         font-weight: 400;
         line-height:16px;
         span{
-            color:${({sequenciaAtual, recorde}) => (sequenciaAtual === recorde && sequenciaAtual !== 0) ? "#8FC549" : "#666666"};
+            color:${({sequenciaAtual, recorde}) => (parseInt(sequenciaAtual) === parseInt(recorde) && parseInt(sequenciaAtual) !== 0) ? "#8FC549" : "#666666"};
         }
     }
 `

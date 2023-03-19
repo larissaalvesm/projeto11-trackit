@@ -1,8 +1,7 @@
 import styled from "styled-components"
 
 export default function DiasHabito({day, i, hab}) {
-    
-    return (
+        return (
             <BotaoDia
             data-test="habit-day"
             dias={hab.days}
